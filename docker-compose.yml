@@ -1,0 +1,21 @@
+# Version of Docker Compose
+version: "3"
+
+# app - name of the service
+# context . <- current directory
+# ports map from 8000 on the host to 8000 on the image
+# volume - allows to get update that are made to the project into the image in a real time
+#   when changes are detected, container will automatically be updated
+# command - '>' lets us write on the new line
+# command below will run the command to run the server using sh
+# -c <- run command
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
