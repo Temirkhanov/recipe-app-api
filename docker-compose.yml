@@ -9,6 +9,10 @@ version: "3"
 # command - '>' lets us write on the new line
 # command below will run the command to run the server using sh
 # -c <- run command
+# db - database service with image of postgrase from dockerhub with a tag 10-alpine
+# environment - list of env variables that will be passed to postgres when it starts
+# POSTGRES_PASSWORD in prod on build service we need to override it with the key
+# depends_on specifies that app service depends on db. Therefore db service will start before app service.
 services:
   app:
     build:
@@ -19,3 +23,17 @@ services:
       - ./app:/app
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+    depends_on:
+      - db
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
